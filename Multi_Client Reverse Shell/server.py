@@ -100,6 +100,9 @@ def start_turtle():
             if conn is not None:
                 send_target_commands(conn)
 
+        elif cmd == "quit":
+            break
+
         else:
             print("Command not recognized")
 
@@ -117,8 +120,8 @@ def list_connections():
             continue # Go back to the start of for loop
 
         # By this point, connection exists
-        results = str(i) + "  " + str(all_address[i][0]) + "  " + str(all_address[i][1]) + "\n"
-    print("--- Clients ---" + "\n" + results)
+        result += str(i) + "  " + str(all_address[i][0]) + "  " + str(all_address[i][1]) + "\n"
+    print("--- Clients ---" + "\n" + result)
 
 ''' Selecting the target '''
 def get_target(cmd):
