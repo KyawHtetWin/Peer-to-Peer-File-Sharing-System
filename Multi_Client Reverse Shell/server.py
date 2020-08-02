@@ -183,7 +183,6 @@ def work():
 
         queue.task_done()
 
-
 ''' Create jobs '''
 def create_jobs():
     for x in JOB_NUMBER:

@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: arp
+Version: 1.0
+Summary: Raw packets, ARP /RARP queries and replies and MAC resolution
+Home-page: UNKNOWN
+Author: Andreas Urbanski
+Author-email: urbanski.andreas@gmail.com
+License: GPLv3
+Description: UNKNOWN
+Keywords: arp rarp raw packet ethernet frame mac ip
+Platform: Windows
