@@ -18,40 +18,43 @@ class Client:
             # Connect to specified address and port
             self.sock.connect((address, port))
 
-            while True:
-                # Creates a thread to send requests
-                s_thread = threading.Thread(target=self.send_req)
-                s_thread.daemon = True
-                s_thread.start()
+            try:
+                self.send_fupdate_req()
+                while True:
+                    resp_byte = self.sock.recv(1024)
+                    # Receives response from server
+                    if resp_byte:
+                        # Decode the response back into string
+                        resp = resp_byte.decode("utf-8")
 
-                # Receives response
-                resp_byte = self.sock.recv(1024)
+                        """ Handles different responses the server can send """
+                        # Server sends a peer list to update
+                        if "PLIST" in resp:
+                            print("\nReceived peer list:")
 
-                # Receives response from server
-                if resp_byte:
-                    # Decode the response back into string
-                    resp = resp_byte.decode("utf-8")
+                            # The list of peer can be obtained without the message type
+                            # identifier(first element) & last extra element of the response string
+                            Peer.peers = resp.split(",")[1:-1]
+                            print(Peer.peers)
 
-                    """ Handles different responses the server can send """
-                    # Server sends a peer list to update
-                    if "PLIST" in resp:
-                        print("Received peer list")
-                        # The list of peer can be obtained without the message type
-                        # identifier(first element) & last extra element of the response string
-                        Peer.peers = resp.split(",")[1:-1]
-
-                    # Server has sent a response of the file
-                    else:
-                        # Just print the response
-                        print("Received - " + resp)
+                        # Server has sent a response of the file
+                        else:
+                            # Just print the response
+                            print("\nReceived - " + resp)
 
                     # No response from server
-                else:
-                    print("No response from server")
-                    break
+                    else:
+                        print("\nNo response from server")
+                        self.sock.close()
+                        break
+            # Keyboard Interrupt to quit client
+            except KeyboardInterrupt:
+                self.sock.close() # Closes the socket
+                self.send_pexit_req() # Send the PEXIT request to server
+                print("Exiting as Client")
 
         else:
-            print("Exiting")
+            print("Exiting as Client")
             sys.exit()
 
 
@@ -69,18 +72,6 @@ class Client:
         except socket.error as error_msg:
             print("Socket Creation Error: " + str(error_msg))
             return None
-
-    """ Invokes the appropriate method for sending request """
-
-    def send_req(self):
-        # Ask the user to make a request
-        request = input("Enter\n\t'f' for file request\n\t'q' to exit\n>>").lower()
-
-        if request == 'f':
-            self.send_fupdate_req()
-
-        elif request == 'q':
-            self.send_pexit_req()
 
     """ Simulates sending of a request for a file """
 
@@ -102,6 +93,8 @@ class Client:
         self.sock.send(exit_req_byte)
         # Quit this instance
         sys.exit()
+
+
 
 
 

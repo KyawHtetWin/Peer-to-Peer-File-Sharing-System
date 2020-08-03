@@ -1,7 +1,5 @@
 import threading
 import socket
-import sys
-
 
 class Server:
     """  Constructor: Initializes everything and starts running the server. """
@@ -36,19 +34,31 @@ class Server:
                     t = threading.Thread(target=self.req_dispatcher, args=(client_sock, client_addr))
                     t.daemon = True
                     t.start()
+                    # See how many threads (connections) are active
+                    print("Active Connections: " + str(threading.activeCount()-1))
 
-                    print("Connection established! IP: " + str(client_addr[0]))
+                    print("Connection established! " + str(client_addr))
 
                     # Send the peer list to all neighbors whenever a new node has been connected
                     self.send_peerList()
+                # Socket not created properly, so quit the server
+                else:
+                    break
 
-            # The user wants to exits the program
+            # The user wants to exits the server
             except KeyboardInterrupt:
-                print("\nExiting the program")
-                sys.exit()
+                print("\nExiting the server")
+                self.sock.close()
+                client_sock.close()
+                #sys.exit()
+                break
 
             except:
+                self.sock.close()
+                client_sock.close()
                 print("Error accepting connections")
+                break
+
 
     """ Call the appropriate handler function based on the kinds of request from peer """
 
@@ -68,26 +78,22 @@ class Server:
             self.handlers[data_string.split(",")[0]](client_sock, client_addr, data_string.split(",")[1:])
 
             # Close the socket connection
-            client_sock.close()
+            #client_sock.close()
         else:
             print("No data received")
             # break
 
-
     """ This method handles the exit of a node from the network """
-
 
     def handle_peer_exit(self, sock, addr, data):
         # Remove the peer from the list
         self.all_conn.remove(sock)
         self.all_neighbor.remove(addr)
-        print("Peer " + str(addr[0]) + " Exited")
+        print("Peer " + str(addr) + " Exited")
         # Give updates of the exit to all other the neighbors
         self.send_peerList()
 
-
     """ This method simulates the sharing of the file that is being requested to all the known peers """
-
 
     def handle_file_update(self, sock, addr, data):
         # TODO: Lookup the file in hash table, if found, respond, else ask neighbors for file (Flooding)
@@ -98,10 +104,8 @@ class Server:
         for conn in self.all_conn:
             conn.send(res_byte)
 
-
     """ This method handles the creation of a socket and displays appropriate errors if they happened. If
         successful, it returns a socket object. """
-
 
     def create_socket(self, address, port):
         try:
@@ -123,20 +127,21 @@ class Server:
 
             # Catches any error when binding the socket
         except socket.error as error_msg:
-            print("Socket Binding Error: " + str(error_msg))
+            print("\nSocket Binding Error: " + str(error_msg))
+            print("Another peer already running as server\n")
             return None
-
 
     """ Sends the list of peers to all the known peers"""
 
-
     def send_peerList(self):
+        # print("Inside send_peerList")
         p_list = ""  # A comma-separated string of a list of all peers IP address
         for neighbor in self.all_neighbor:
             p_list += str(neighbor[0]) + ','
 
         # Appends the message identifier at the beginning
         p_list = "PLIST," + p_list
+        #print("p_list: " + p_list)
 
         # Converts the string message to bytes to send over socket connection
         p_list_byte = p_list.encode('utf-8')
@@ -144,3 +149,5 @@ class Server:
         # Sends the peerList to all peers
         for conn in self.all_conn:
             conn.send(p_list_byte)
+
+

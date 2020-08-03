@@ -1,8 +1,11 @@
 import time
 import random
+import sys
+import socket
+
+sys.path.append(".")
 import server
 import client
-import sys
 
 PORT = 5000
 
@@ -27,6 +30,8 @@ def main():
                     pass
 
                 try:
+                    # Gets the private IP address of the local machine
+                    # address = socket.gethostbyname(socket.gethostname())
                     server.Server(PORT, address='127.0.0.1')
                 except KeyboardInterrupt:
                     sys.exit(0)
