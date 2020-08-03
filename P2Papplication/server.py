@@ -4,7 +4,6 @@ import sys
 
 
 class Server:
-
     """  Constructor: Initializes everything and starts running the server. """
 
     def __init__(self, port, address=""):
@@ -25,7 +24,7 @@ class Server:
         while True:
             try:
                 if self.sock:
-                    print("Socket created successfully...")
+                    print("Server Socket created successfully...")
                     # Start accepting connections from other nodes
                     client_sock, client_addr = self.sock.accept()
 
@@ -55,36 +54,40 @@ class Server:
 
     def req_dispatcher(self, client_sock, client_addr):
 
-        while True:
-            # Receives the request from client
-            data_byte = client_sock.recv(1024)
+        # while True:
+        # Receives the request from client
+        data_byte = client_sock.recv(1024)
 
-            if data_byte:
-                data_string = data_byte.decode('utf-8')  # Converts back to string
-                '''
-                Request are always sent in following comma-separated format:
-                        REQUEST_TYPE, ACTUAL MESSAGE
-                Pass client_sock, client_addr, and the acutal message as a list to call correct handlers
-                '''
-                self.handlers[data_string.split(",")[0]](client_sock, client_addr, data_string.split(",")[1:])
+        if data_byte:
+            data_string = data_byte.decode('utf-8')  # Converts back to string
+            '''
+            Request are always sent in following comma-separated format:
+                    REQUEST_TYPE, ACTUAL MESSAGE
+            Pass client_sock, client_addr, and the acutal message as a list to call correct handlers
+            '''
+            self.handlers[data_string.split(",")[0]](client_sock, client_addr, data_string.split(",")[1:])
 
-            else:
-                print("No data received")
-                break
+            # Close the socket connection
+            client_sock.close()
+        else:
+            print("No data received")
+            # break
+
 
     """ This method handles the exit of a node from the network """
+
 
     def handle_peer_exit(self, sock, addr, data):
         # Remove the peer from the list
         self.all_conn.remove(sock)
         self.all_neighbor.remove(addr)
-        # Closes the connection
-        sock.close()
         print("Peer " + str(addr[0]) + " Exited")
         # Give updates of the exit to all other the neighbors
         self.send_peerList()
 
+
     """ This method simulates the sharing of the file that is being requested to all the known peers """
+
 
     def handle_file_update(self, sock, addr, data):
         # TODO: Lookup the file in hash table, if found, respond, else ask neighbors for file (Flooding)
@@ -95,8 +98,10 @@ class Server:
         for conn in self.all_conn:
             conn.send(res_byte)
 
+
     """ This method handles the creation of a socket and displays appropriate errors if they happened. If
         successful, it returns a socket object. """
+
 
     def create_socket(self, address, port):
         try:
@@ -121,10 +126,11 @@ class Server:
             print("Socket Binding Error: " + str(error_msg))
             return None
 
+
     """ Sends the list of peers to all the known peers"""
 
-    def send_peerList(self):
 
+    def send_peerList(self):
         p_list = ""  # A comma-separated string of a list of all peers IP address
         for neighbor in self.all_neighbor:
             p_list += str(neighbor[0]) + ','

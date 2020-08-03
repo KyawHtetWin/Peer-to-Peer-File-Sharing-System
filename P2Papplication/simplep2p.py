@@ -4,14 +4,15 @@ import server
 import client
 import sys
 
-PORT = 9999
+PORT = 5000
 
 class Peer:
     # Loopback address
     peers = ['127.0.0.1']
 
 def main():
-    while True:
+    flag = True
+    while flag:
         try:
             print("Trying to connect...")
             # Randomly sleeps before becoming a peer
@@ -26,11 +27,14 @@ def main():
                     pass
 
                 try:
-                    server.Server(PORT)
+                    server.Server(PORT, address='127.0.0.1')
                 except KeyboardInterrupt:
                     sys.exit(0)
-                except:
+                except Exception as e:
+                    flag = False
                     print("Failed to start server")
+                    print(e)
+                    break
 
         except KeyboardInterrupt:
             sys.exit(0)
