@@ -18,11 +18,10 @@ class Server:
             'PEXIT': self.handle_peer_exit
         }
 
-        # TODO:Implements a hash table as follows: Hashed Key of File ===> [peer1, peer2, ...]
         while True:
             try:
                 if self.sock:
-                    print("Server Socket created successfully...")
+                    #print("Server Socket created successfully...")
                     # Start accepting connections from other nodes
                     client_sock, client_addr = self.sock.accept()
 
@@ -35,7 +34,7 @@ class Server:
                     t.daemon = True
                     t.start()
                     # See how many threads (connections) are active
-                    print("Active Connections: " + str(threading.activeCount()-1))
+                    #print("Active Connections: " + str(threading.activeCount()-1))
 
                     print("Connection established! " + str(client_addr))
 
@@ -93,7 +92,8 @@ class Server:
         # Give updates of the exit to all other the neighbors
         self.send_peerList()
 
-    """ This method simulates the sharing of the file that is being requested to all the known peers """
+    """ This method simulates the sharing of the file that is being requested to all the known peers. The data
+        is passed as the list """
 
     def handle_file_update(self, sock, addr, data):
         # TODO: Lookup the file in hash table, if found, respond, else ask neighbors for file (Flooding)

@@ -14,7 +14,7 @@ class Client:
         self.sock = self.create_socket(address= address, port= port)
 
         if self.sock:
-            print("Client Socket created successfully...")
+            #print("Client Socket created successfully...")
             # Connect to specified address and port
             self.sock.connect((address, port))
 
