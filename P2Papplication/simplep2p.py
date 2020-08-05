@@ -1,7 +1,7 @@
 import time
 import random
 import sys
-sys.path.append(".")
+#sys.path.append(".")
 import server
 import client
 import hashlib
@@ -11,28 +11,32 @@ import os
 DIRECTORY = "./shared_folder"
 
 PORT = 5000
+# Randomly chooses a port number
+# PORT = random.randint(5050, 7070)
 
 class Peer:
-    # Loopback address
+    # Loopback address (for demo purpose)
+    # The final program should store a list of known peers
     peers = ['127.0.0.1']
 
     def __init__(self):
         # A list of key of all the files in shared_folder of this peer (positional dependent)
         self.all_files = []
+        self.peers = []
 
     # TODO:Implements a hash table as follows: Hashed Key of File ===> [peer1, peer2, ...]
 
     """ Given a filename, a peer hash the file using sha3-256 algorithm and returns 
         a resulting hexdecimal hashed key in string  """
 
-    def hash_file(self, f_name, block_size= 6*1024):
+    def hash_file(self, f_name, block_size=6*1024):
         # Creates a hash object
         file_hash = hashlib.sha3_256()
         # Open file to read its bytes
         with open(f_name, 'rb') as f:
             while True:
                 data = f.read(block_size)
-
+                # Once finished reading the file, quit
                 if not data:
                     break
                 # Update the hash if there is data
@@ -42,7 +46,7 @@ class Peer:
     """ Given a directory, it hashes all the files inside it and returns a list of hashed key """
 
     def update_all_files(self, directory):
-        keys = []
+        keys = [] # Stores all the hashed-values of files
         # Loops over the files in directory
         for filename in os.listdir(directory):
             # Ignoring the file (.DS_Store)
@@ -53,8 +57,8 @@ class Peer:
         return keys
 
 def main():
-    flag = True
-    while flag:
+
+    while True:
         try:
             print("Trying to connect...")
             # Randomly sleeps before becoming a peer
@@ -68,7 +72,7 @@ def main():
                 except:
                     pass
 
-                print("="*21)
+                print("="*40)
 
                 try:
                     # Gets the private IP address of the local machine
@@ -77,7 +81,6 @@ def main():
                 except KeyboardInterrupt:
                     sys.exit(0)
                 except Exception as e:
-                    flag = False
                     print("Failed to start server")
                     print(e)
                     break

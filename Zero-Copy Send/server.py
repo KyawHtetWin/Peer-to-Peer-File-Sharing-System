@@ -24,6 +24,7 @@ import os
 directory = "./shared_folder"
 
 for filename in os.listdir(directory):
+	# Ignorng the file (.DS_Store)
 	if not filename.startswith('.'):
 		print(filename)
 
