@@ -4,7 +4,6 @@ import time
 import concurrent.futures
 import socket
 import random
-import server
 
 
 ''' Opens a pipe to or from Terminal to get devices on a local network by broadcasting ARP packet request and parsing 
@@ -19,11 +18,29 @@ def find_local_nodes():
     # print(ip_addresses)
     return ip_addresses
 
+''' Scan a given IP address for a given port'''
+def port_scanner(s, target_ip, target_port):
+    try:
+        s.connect((target_ip, target_port))
+        return True
+    except:
+        return False
+
+''' Scan all open ports on a target ip '''
+def get_open_port(ip):
+    S = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    for port in range(1, 1024):
+        if port_scanner(S, ip, port):
+            print("Port " + str(port) + " Open")
+    S.close()
+
+my_ip = "10.5.19.80"
+get_open_port(my_ip)
 
 
 # Gets the private IP address of the local machine
 #host_addr = socket.gethostbyname(socket.gethostname())
-port = 9999
+port = 64255
 peers = []
 
 """ This method handles the creation of a socket and displays appropriate errors if they happened. If
@@ -34,7 +51,7 @@ def create_socket(address, port):
         # Creates a socket to communicate using TCP/IPv4
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Configure to make the port reusable immediately
-        #s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         # Catches any error when creating a socket
     except socket.error as error_msg:
@@ -50,6 +67,7 @@ def create_socket(address, port):
         # Catches any error when binding the socket
     except socket.error as error_msg:
         print("\nSocket Binding Error: " + str(error_msg))
+        print("For IP address ", address)
         return None
 
 
@@ -63,9 +81,8 @@ if not peers:
         f1 = executor.submit(find_local_nodes)
 
         peers = f1.result()
-
 print(peers)
-print()
+
 
 # Now the peers list is filled with potential peers
 for peer in peers:
