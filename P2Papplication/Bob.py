@@ -1,3 +1,14 @@
+"""
+TESTING MODULE: In trying to discover potential peers, Bob probes the LAN by sending
+                out ARP request to get a list of IP address of all active devices.
+                Bob connects to those IP addresses hoping that a peer already in the
+                network(Alice) will send a JOIN message. Bob responds with acknowledgement or
+                SUCCESS message, becoming Alice's peer.
+
+"""
+
+
+
 import os
 import re
 import time
@@ -34,14 +45,6 @@ def get_open_port(ip):
             print("Port " + str(port) + " Open")
     S.close()
 
-my_ip = "10.5.19.80"
-get_open_port(my_ip)
-
-
-# Gets the private IP address of the local machine
-#host_addr = socket.gethostbyname(socket.gethostname())
-port = 64255
-peers = []
 
 """ This method handles the creation of a socket and displays appropriate errors if they happened. If
     successful, it returns a socket object. """
@@ -71,6 +74,10 @@ def create_socket(address, port):
         return None
 
 
+# Gets the private IP address of the local machine
+host_addr = socket.gethostbyname(socket.gethostname())
+port = 64255
+peers = []
 start = time.perf_counter()
 time.sleep(random.randint(1, 5))
 print("Bob scanning LAN...")
@@ -81,6 +88,7 @@ if not peers:
         f1 = executor.submit(find_local_nodes)
 
         peers = f1.result()
+
 print(peers)
 
 
@@ -102,7 +110,7 @@ for peer in peers:
             if data_byte:
                 data_string = data_byte.decode('utf-8')  # Converts back to string
                 if 'JOIN' in data_string:
-                    print(peer + " has joined the network!")
+                    print("Found " + peer)
                     success_msg = "SUCCESS"
                     sock.send(success_msg.encode('utf-8'))
             # Otherwise, this node is not interested in becoming peer

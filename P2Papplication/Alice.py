@@ -1,6 +1,14 @@
-import socket
-import server
+"""
+TESTING MODULE: When Alice receives an incoming TCP connection from Bob, it will
+                send out JOIN response to Bob to see if Bob wants to join the
+                p2p network. If Bob responds with SUCCESS, then, Bob becomes
+                Alice's peer.
+"""
 
+
+import socket
+
+# Simply creates socket
 def create_socket(address, port):
     try:
         # Creates a socket to communicate using TCP/IPv4
@@ -27,8 +35,7 @@ def create_socket(address, port):
 
 
 # Gets the private IP address of the local machine
-# host_addr = socket.gethostbyname(socket.gethostname())
-host_addr = '10.53.231.177'
+host_addr = socket.gethostbyname(socket.gethostname())
 port = 9999
 sock = create_socket(address=host_addr, port= port)
 sock.listen(5)
@@ -47,6 +54,7 @@ while True:
         client_conn.send(request_byte)
 
         response_byte = client_conn.recv(1024)
+        # Receives SUCCESS response for JOIN message, so add the node to become peer
         if 'SUCCESS' in request_byte.decode('uft-8'):
             print("Become my peer")
             peers.append(address[0])

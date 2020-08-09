@@ -1,7 +1,12 @@
+"""
+TESTED MODULE: Represents an individual peer that is looping to take the role of the
+               client and then server until interrupted by keyboard from users.
+"""
+
+
 import time
 import random
 import sys
-#sys.path.append(".")
 import server
 import client
 import hashlib
@@ -11,8 +16,6 @@ import os
 DIRECTORY = "./shared_folder"
 
 PORT = 5000
-# Randomly chooses a port number
-# PORT = random.randint(5050, 7070)
 
 class Peer:
     # Loopback address (for demo purpose)
@@ -65,6 +68,7 @@ def main():
             time.sleep(random.randint(1, 5))
 
             for peer in Peer.peers:
+                # Becomes a Client
                 try:
                     client.Client(peer, PORT)
                 except KeyboardInterrupt:
@@ -73,7 +77,7 @@ def main():
                     pass
 
                 print("="*40)
-
+                # Becomes a Server
                 try:
                     # Gets the private IP address of the local machine
                     # address = socket.gethostbyname(socket.gethostname())
