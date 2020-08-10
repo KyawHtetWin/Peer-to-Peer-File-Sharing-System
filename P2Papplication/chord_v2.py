@@ -1,19 +1,18 @@
+"""
+TESTED MODULE: Class models a node in a chord protocol based structure
+This Chord protocol serves as an implementation of a DHT in a peer to peer system
+
+Code base modifed and pulled from Distributed Systems 3rd edition book
+by Steen and Tanenbaum
+
+"""
+
 
 import channel 
 import random, math 
 from constChord import * 
 
 
-
-
-"""
-Class models a node in a chord structure
-This Chord structure serves as an implementation of a DHT in a peer to peer system
-
-Code base modifed and pulled from Distributed Systems 3rd edition book
-by Steen and Tanenbaum
-
-"""
 class ChordNode:
 
   # Class constructor
