@@ -1,20 +1,24 @@
+"""
+TESTED MODULE: Client sends an update for files when run and appropriately handles
+               the different responses that can be received from servers.
+
+"""
+
 import socket
 import random
 import sys
-import threading
 from simplep2p import Peer
 
 class Client:
-
     """ Constructor: Initializes everything and run the client"""
 
     def __init__(self, address, port):
         print("\nClient running...")
         # Creates a socket to send and receive information
-        self.sock = self.create_socket(address= address, port= port)
+        self.sock = self.create_socket(address=address, port=port)
 
         if self.sock:
-            #print("Client Socket created successfully...")
+            # print("Client Socket created successfully...")
             # Connect to specified address and port
             self.sock.connect((address, port))
 
@@ -49,19 +53,18 @@ class Client:
                         break
             # Keyboard Interrupt to quit client
             except KeyboardInterrupt:
-                self.sock.close() # Closes the socket
-                self.send_pexit_req() # Send the PEXIT request to server
+                self.sock.close()  # Closes the socket
+                self.send_pexit_req()  # Send the PEXIT request to server
                 print("Exiting as Client")
 
         else:
             print("Exiting as Client")
             sys.exit()
 
-
     """ This method handles the creation of a socket and displays appropriate errors if they happened. If
         successful, it returns a socket object. """
 
-    def create_socket(self, address, port):
+    def create_socket(self):
         try:
             # Creates a socket to communicate using TCP/IPv4
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -76,13 +79,12 @@ class Client:
     """ Simulates sending of a request for a file """
 
     def send_fupdate_req(self):
-        msg = "File: " + str(random.randint(1,20))
+        msg = "File: " + str(random.randint(1, 20))
         print("Requesting " + msg)
         # All requests should be sent in the format REQUESTTYPE, MESSAGE
-        send_req = "FUPDATE," +  msg + ","
+        send_req = "FUPDATE," + msg + ","
         send_req_byte = send_req.encode("utf-8")
         self.sock.send(send_req_byte)
-
 
     """ Send a request to disconnect """
 
@@ -93,8 +95,6 @@ class Client:
         self.sock.send(exit_req_byte)
         # Quit this instance
         sys.exit()
-
-
 
 
 

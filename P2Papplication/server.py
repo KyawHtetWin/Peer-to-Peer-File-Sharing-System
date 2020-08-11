@@ -1,3 +1,10 @@
+"""
+TESTED MODULE: Multithreaded server that can handle multiple clients. One thread handles
+               all the incoming requests from clients while another thread dispatches
+               the request to be handle by appropriate functions based on the type of
+               of request made at the server.
+"""
+
 import threading
 import socket
 
