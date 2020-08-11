@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """
 TESTED MODULE: Multithreaded server that can handle multiple clients. One thread handles
                all the incoming requests from clients while another thread dispatches
@@ -158,3 +159,5 @@ class Server:
             conn.send(p_list_byte)
 
 
+=======
+>>>>>>> parent of 541b85c... client/server

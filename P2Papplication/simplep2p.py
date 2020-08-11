@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """
 TESTED MODULE: Represents an individual peer that is looping to take the role of the
                client and then server until interrupted by keyboard from users.
@@ -95,3 +96,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+=======
+>>>>>>> parent of 541b85c... client/server
