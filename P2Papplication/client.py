@@ -7,7 +7,7 @@ TESTED MODULE: Client sends an update for files when run and appropriately handl
 import socket
 import random
 import sys
-from simplep2p import Peer
+import simplep2p
 
 class Client:
     """ Constructor: Initializes everything and run the client"""
@@ -15,7 +15,7 @@ class Client:
     def __init__(self, address, port):
         print("\nClient running...")
         # Creates a socket to send and receive information
-        self.sock = self.create_socket(address=address, port=port)
+        self.sock = self.create_socket()
 
         if self.sock:
             # print("Client Socket created successfully...")
@@ -38,8 +38,8 @@ class Client:
 
                             # The list of peer can be obtained without the message type
                             # identifier(first element) & last extra element of the response string
-                            Peer.peers = resp.split(",")[1:-1]
-                            print(Peer.peers)
+                            simplep2p.Peer.peers = resp.split(",")[1:-1]
+                            print(simplep2p.Peer.peers)
 
                         # Server has sent a response of the file
                         else:
@@ -97,5 +97,6 @@ class Client:
         sys.exit()
 
 
-
+#PORT = 9999
+#Client(port=PORT, address='127.0.0.1')
 

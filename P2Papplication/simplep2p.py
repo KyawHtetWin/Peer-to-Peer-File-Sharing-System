@@ -15,7 +15,7 @@ import os
 # The shared folder containing all the files shared by all peers in the network should share
 DIRECTORY = "./shared_folder"
 
-PORT = 5000
+PORT = 9999
 
 class Peer:
     # Loopback address (for demo purpose)

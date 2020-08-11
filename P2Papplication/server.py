@@ -28,7 +28,7 @@ class Server:
         while True:
             try:
                 if self.sock:
-                    #print("Server Socket created successfully...")
+                    print("Server Socket created successfully...")
                     # Start accepting connections from other nodes
                     client_sock, client_addr = self.sock.accept()
 
@@ -70,7 +70,6 @@ class Server:
 
     def req_dispatcher(self, client_sock, client_addr):
 
-        # while True:
         # Receives the request from client
         data_byte = client_sock.recv(1024)
 
@@ -157,4 +156,6 @@ class Server:
         for conn in self.all_conn:
             conn.send(p_list_byte)
 
+#PORT = 9999
+#Server(PORT, '127.0.0.1')
 
