@@ -29,7 +29,7 @@ def create_socket(address, port):
 # Gets the private IP address of the local machine
 # host_addr = socket.gethostbyname(socket.gethostname())
 host_addr = '10.53.231.177'
-port = 9999
+port = 64200
 sock = create_socket(address=host_addr, port= port)
 sock.listen(5)
 
